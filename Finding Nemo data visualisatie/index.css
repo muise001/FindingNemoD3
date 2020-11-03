@@ -1,0 +1,18 @@
+html {
+    background: #e6a06d;
+}
+
+.x .tick:hover {
+    color: purple;
+}
+
+.x .tick text {
+    transition: font-size .3s, fill .3s;
+}
+
+.x .tick:hover text, .active {
+    cursor: pointer;
+    fill: purple!important;
+    transition: font-size .3s, fill .3s;
+    font-size: 20px
+}
