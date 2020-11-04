@@ -97,9 +97,11 @@ De x-as was een ander verhaal. Omdat mijn data was vormgegeven op de manier waar
   [{line: "bla, bla", lineNumber: 4, scene: 2} {line: "bla, bla", lineNumber: 5, scene: 2}]
 ```
 
-deze transitie bleek gelukkig makkelijker dan verwacht. Later heb ik ook de naam toegevoegd van het personage die het de zin in kwestie zegt. Dit had ik nodig om de bolletjes goed te alignen met de y-as. De totalLinesByCharacter heb ik later toegevoegd om de kleur van de bolletjes te bekijken
+deze transitie bleek gelukkig makkelijker dan verwacht. Later heb ik ook de naam toegevoegd van het personage die het de zin in kwestie zegt. Dit had ik nodig om de bolletjes goed te alignen met de y-as. De totalLinesByCharacter heb ik later toegevoegd om de kleur van de bolletjes te berekenen
 
 ```javascript
+const allLinesWithNamesData = []
+
 Object.entries(data).forEach(characterObj => {
     characterObj[1].scentance.map(scentance => {
         allLinesWithNamesData.push({
@@ -108,9 +110,37 @@ Object.entries(data).forEach(characterObj => {
             totalLinesByCharacter: characterObj[1].scentance.length})   // Added later in the process
         })
     })
+```
 
+als x.domain had ik in de eerste instantie `x.domain(0, allLinesWithNamesData.length - 1)`. Later leg ik uit waarom dit niet de beste manier was.
+
+### De bolletjes
+
+Nadat de x- en y-as getoond werden, kon ik dan aan de bolletjes beginnen. Dit was vrij makkelijk aangezien ik nu de data op een andere manier had geparsed. 
+
+```javascript
+const circles = g.selectAll("circle")
+       .data(allLinesWithNamesData, d => d.lineNumber)
+       
+circles.enter().append("circle")
+    .attr("cx", d => x(d.lineNumber))
+    .attr("cy", d => y(d.name))
+    .attr("r", "3")
+```
+Dit resulteerde in de onderstaande data-visualisatie.
 
 ![versie 0.1](https://github.com/muise001/FindingNemoD3/blob/main/foto's/v0.1.jpeg)
+
+## Bigger and Better
+Nu alles op het scherm stond ben ik terug gegaan naar de tekentafel. Er was een hoop goed, maar er was misschien wel meer verkeerd. Ik heb een lijstje gemaakt van wat ik nog wilde toevoegen. Zie het lijstje hieronder: 
+
+-[x] Tooltip
+-[ ] Data vergelijken met "Finding Dory" (de vervolgfilm van finding Nemo)
+-[x] Selecteren van een of meerdere scenes
+-[x] X-as moet scenes weergeven en geen nietszeggende getallen
+-[x] De bolletjes moeten kleuren krijgen
+
+### -[x] Tooltip
 
 sources custom tick values x-axis : https://observablehq.com/@d3/axis-ticks
 
