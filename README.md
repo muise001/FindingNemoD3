@@ -34,6 +34,8 @@ Ik kwam op een website genaamd [imsdb.com](imsdb.com). Hier bieden ze van waanzi
   2. Personages
   3. Zinnen
   
+  ![rouwe data](https://github.com/muise001/FindingNemoD3/blob/main/foto's/Schermafbeelding%202020-11-04%20om%2015.05.24.png)
+  
 Dit was percies wat ik nodig had. Ik heb het filmscript volledig ge-copy-paste naar een .txt bestand en heb een aantal kleine dingen bewerkt in dit bestand.
   1. Alle enters eruit
   2. Alle "===================" (wat waarschijnlijk aangeeft dat er een switch van locatie is) eruit
