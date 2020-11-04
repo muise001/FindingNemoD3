@@ -259,6 +259,12 @@ const xAxisCall = d3.axisBottom(x)
     .tickFormat((d, i) => sceneCoordinates.scene[i])
 ```
 
+Ook laat ik lijnen vanuit de x-as verschijnen met behulp van (deze bron)[https://bl.ocks.org/d3noob/c506ac45617cf9ed39337f99f8511218]. Nu ziet de xAxisGroup er alsvolgd uit.
+```javascript
+xAxisGroup
+  .call(xAxisCall.tickSize(-HEIGHT))
+```
+
 ### Selecteren van een of meerdere scenes
 Natuurlijk wilde ik de grafiek ook spannender maken. Ik wilde dat het mogelijk werd om scenes te ontdekken door ze van dichterbij te kunnen bekijken. Ook wilde ik dat je door de hele film kon klikken als je bijvoorbeeld maar één scene had geselecteerd (dus dat je van scene 1 naar scene 2 gaat etc.).
 
@@ -285,8 +291,8 @@ Dit resulteerde in een kapotte x-as. Sterker nog, na elke re-render vloog de hel
 Nu werkte het weer, aangezien hij nu het eerste regelnummer van de nieuwe data pakt en het laatste regelnummer.
 
 Nu het zoomen werkt, wilde ik extra navigatie maken. Dit zijn een aantal knoppen
-  - + en - Links 
-  - + en - Rechts
+  - `+` en `-` Links 
+  - `+` en `-` Rechts
   - Volgende scene (dan gaat er een scene aan het begin weg, en komt er eentje aan het einde bij)
   - Vorige scene
   - Reset
@@ -306,6 +312,24 @@ Op internet vond ik een manier hoe je data kon halen uit de y-functie. dit bleek
 ```javascript
 const tickSize = (y(y.domain()[1]) - y(y.domain()[0])) / 2
 ```
+
+In mijn ogen was deze oplossing het bewijs dat ik me comfortabel voel met d3, en ik ben heel trots dat dit lukte. 
+
+## Grootte van de bolletjes
+Als je inzoomt, dan bleven de bolletjes net zo groot, als in de eerste render. Dat is 3px. Super klein, dus. Als je naar een scene kijkt die maar uit twee peronages bestaat, dan wil je niet dat je naar mini-bolletjes kijkt. De grootte van de bolletjes heb ik afhankelijk gemaakt van de ticksize (die hierboven wordt uitgelegd). Om eerlijk te zijn heb ik niet heel veel logica toegepast, maar ben ik gewoon gaan kijken naar wat er ongeveer goed uit zag.
+```javascript
+.attr("r", (tickSize / 2.5) < 3 ? 3 : (tickSize > 50 ? 50 : tickSize))
+```
+
+## Animaties
+Om animaties toe te voegen, heb ik een generieke animatie variabele gemaakt. 
+`const t = d3.transition().duration(1500) `
+
+Hierin zeg ik dat alle animaties anderhalve seconde moeten duren. Klinkt lang, en dat is het ook. Maar het resultaat ziet er goed uit.
+
+Als intro-animatie wilde ik het laten lijken alsof er allemaal bubbeltjes uit water naar boven dreven. Dit effect heb ik bereikt door alle x-as posities van de bolletjes vanaf het begin mee te geven en de y-as heb laten animeren. Hierdoor gaan de bolletjes recht omhoog.
+
+Verder heb ik de x-as en y-as laten animeren. Dit staat gewoon goed als je inzoomed.
 
 https://stackoverflow.com/questions/49154717/d3-js-x-axis-disappears-when-i-set-the-y-axis-domain-to-have-a-minimum-greater
 https://stackoverflow.com/questions/46942134/svg-translate-group-positioning-on-window-resize-with-d3
