@@ -66,7 +66,9 @@ Uiteindelijk heeft mijn parser het voor elkaar gekregen om deze data naar wens t
 ![De bruikbare data](https://github.com/muise001/FindingNemoD3/blob/main/foto's/Schermafbeelding%202020-11-04%20om%2015.07.01.png)
   
 ### Het Design
-Nu ik de data had ging ik nadenken wat ik ermee wilde doen. Ik had eerder al een lijstje bedacht, maar had geen zin om bar-charts te maken. Die zijn vaak simpel en weinig uitdagend.
+Nu ik de data had ging ik nadenken wat ik ermee wilde doen. Ik had eerder al een lijstje bedacht, maar had geen zin om bar-charts te maken. Die zijn vaak simpel en weinig uitdagend. Uiteindelijk kwam ik met hetvolgende design: 
+
+![design schets](https://github.com/muise001/FindingNemoD3/blob/main/foto's/design.heic)
 
 sources y-axis: https://bl.ocks.org/hrecht/f84012ee860cb4da66331f18d588eee3 (outdated)
                 https://observablehq.com/@d3/d3-scaleordinal
