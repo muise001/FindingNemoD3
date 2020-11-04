@@ -140,6 +140,7 @@ Nu alles op het scherm stond ben ik terug gegaan naar de tekentafel. Er was een 
 - [x] X-as moet scenes weergeven en geen nietszeggende getallen
 - [x] Selecteren van een of meerdere scenes
 - [x] x-as sluit niet aan op y-as
+- [x] animaties
 
 **To do / Not doing**
 - [ ] Data vergelijken met "Finding Dory" (de vervolgfilm van finding Nemo)
@@ -274,7 +275,7 @@ Als je op het tweede klikt, wordt je selectie ongedaan gemaakt
 
 Als je twee "unieke" scenes selecteerd, wordt de functie `constructNewData` aangeroepen. Deze krijgt `(data, usingScenes)` mee als parameters. Data in dit geval is de originele geparsde dataset. usingScenes is een array met twee getallen. Deze geven aan welke scenes hij van die data moet pakken. Uiteraard eindigd deze functie met het opnieuw aanroepen van de update functie.
 
-Dit resulteerde in een kapotte x-as. Dat kwam omdat de `x.domain` nogsteeds `([0, allLinesWithNamesData.length])` was. Uiteindelijk heb ik die gewijzigd naar: 
+Dit resulteerde in een kapotte x-as. Sterker nog, na elke re-render vloog de hele as en alle bolletjes in een gigantische snelheid het scherm uit. Dat kwam omdat de `x.domain` nogsteeds `([0, allLinesWithNamesData.length])` was. Uiteindelijk heb ik die gewijzigd naar: 
 ```javascript
     x.domain([
       allLinesWithNamesData[0].lineNumber, 
@@ -283,7 +284,18 @@ Dit resulteerde in een kapotte x-as. Dat kwam omdat de `x.domain` nogsteeds `([0
 ```
 Nu werkte het weer, aangezien hij nu het eerste regelnummer van de nieuwe data pakt en het laatste regelnummer.
 
+Nu het zoomen werkt, wilde ik extra navigatie maken. Dit zijn een aantal knoppen
+  - + en - Links 
+  - + en - Rechts
+  - Volgende scene (dan gaat er een scene aan het begin weg, en komt er eentje aan het einde bij)
+  - Vorige scene
+  - Reset
+  
+Al deze functies (behalve reset) roepen direct de `constructNewData` functie aan met de originele data en een array die aangeeft welke scenes erbij moeten komen en welke weg moeten.
 
+MAAAAR.. De bolletjes verschenen nog niet correct. Daar had ik de data-merges en data-joins voor nodig. Dit was heel makkelijk toe te voegen. Als eerst voeg je een `circles.exit().remove()` toe om alle onnodige bolletjes te verwijderen. en aan de `circles.enter().append("circle)` voeg ik na de initiele staat `.merge(circles)` toe. Hierdoor wordt de nieuwe data toegevoegd aan de cirkels. De cirkels die blijven staan, krijgen een andere positie. De reden dat deze niet worden verwijderd en dan weer toegevoegd, is omdat ik in het begin `lineNumber` heb gelinkt aan elk bolletje. Dus als het lijn-nummer hetzelfde is, wordt gewoon zijn positie veranderd. 
+
+## x-as sluit niet aan op y-as
 
 sources custom tick values x-axis : https://observablehq.com/@d3/axis-ticks
 
