@@ -268,7 +268,22 @@ Ik heb een event toegevoegd op `d3.selectAll(".x.axis .tick text")`. Deze roept 
   2. of je op hetzelfde klikt als vorige keer
   3. of je twee unieke kliks hebt
   
-Als je voor het eerste klikt, dan wordt de text van de tick van x-as groter en een andere kleur. Ook wordt de functie `startSelection` aangeroepen. Deze tekent een lijn vanaf het punt op de x-as van waar je op klikte, recht omhoog. als je nu hovered over een andere x-as tick, dan kan je heel duidelijk zien  
+Als je voor het eerste klikt, dan wordt de text van de tick van x-as groter en een andere kleur. Ook wordt de functie `startSelection` aangeroepen. Deze tekent een lijn vanaf het punt op de x-as van waar je op klikte, recht omhoog. als je nu hovered over een andere x-as tick, dan kan je heel duidelijk zien van waar tot waar je selectie loopt. Het selectie-vak moet je zien als een lijn die naar boven loopt, dan naar rechts, en dan naar beneden. In plaats van een `stroke` heb ik deze lijn een `fill` gegeven, hierdoor wordt hij ingekleurd.
+
+Als je op het tweede klikt, wordt je selectie ongedaan gemaakt
+
+Als je twee "unieke" scenes selecteerd, wordt de functie `constructNewData` aangeroepen. Deze krijgt `(data, usingScenes)` mee als parameters. Data in dit geval is de originele geparsde dataset. usingScenes is een array met twee getallen. Deze geven aan welke scenes hij van die data moet pakken. Uiteraard eindigd deze functie met het opnieuw aanroepen van de update functie.
+
+Dit resulteerde in een kapotte x-as. Dat kwam omdat de `x.domain` nogsteeds `([0, allLinesWithNamesData.length])` was. Uiteindelijk heb ik die gewijzigd naar: 
+```javascript
+    x.domain([
+      allLinesWithNamesData[0].lineNumber, 
+      allLinesWithNamesData[allLinesWithNamesData.length - 1].lineNumber
+    ])
+```
+Nu werkte het weer, aangezien hij nu het eerste regelnummer van de nieuwe data pakt en het laatste regelnummer.
+
+
 
 sources custom tick values x-axis : https://observablehq.com/@d3/axis-ticks
 
