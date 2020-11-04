@@ -1,6 +1,6 @@
 # FindingNemoD3
 
-CHECK IT OUT: https://muise001.github.io/FindingNemoD3/Finding%20Nemo%20data%20visualisatie/
+[Klik hier om de website te zien](https://muise001.github.io/FindingNemoD3/Finding%20Nemo%20data%20visualisatie/)
 
 
 sources y-axis: https://bl.ocks.org/hrecht/f84012ee860cb4da66331f18d588eee3 (outdated)
