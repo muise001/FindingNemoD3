@@ -10,9 +10,39 @@ De cursus die ik heb gevolgd is "Mastering data visualization in D3.js [2020 UPD
 
 In de loop van dan deze cursus heb ik meerdere notitieboekjes volgeschreven met kleine cheatsheets en handige tips.
 
-Tijdens deze cursus heb ik geleerd hoe je barcharts, bolletjes grafieken en line-charts maakt. in D3v5
+Tijdens deze cursus heb ik geleerd hoe je barcharts, bolletjes grafieken en line-charts maakt. in D3 v5
 
+### Voorbeelden
+Screenshots van vorige opdrachten
 
+## Finding Nemo
+
+Omdat ik een grafiek wilde maken zonder politieke-lading, denk aan "co2 uitstoot per persoon per land vs bruto nationaal product". Koos ik voor iets luchtigs en leuks. Ik kwam op het idee om een filmscript te ontleden en daar data uit te halen. Ik heb een lijstje gemaakt van een aantal dingen die je uit film scripts kan halen.
+
+- Aantal woorden (totaal film)
+- Aantal personages
+- Aantal woorden per personage
+- Aantal Scenes
+- Aantal zinnen per personage
+- Favoriete woorden per personage
+- Favoriete woorden algemeen
+
+### Data Set
+Ik kwam op een website genaamd [imsdb.com](imsdb.com). Hier bieden ze van waanzinnig veel films film scripts aan. Het enige probleem, is dat bij veel film scripts ook bepaalde settingen in scenes worden behandeld. Denk aan "Personage 1 zat met z'n handen in z'n haren. De zon ging onder. Op de achtergrond is het mistig". Dit maakt het moeilijk om een parser te maken. Toen stuitte ik op het filmscript van [Finding Nemo](https://www.imsdb.com/scripts/Finding-Nemo.html). Deze was geschreven door een fan en had alleen: 
+
+  1. Scenenummers
+  2. Personages
+  3. Zinnen
+  
+Dit was percies wat ik nodig had. Ik heb het filmscript volledig ge-copy-paste naar een .txt bestand en heb een aantal kleine dingen bewerkt in dit bestand.
+  1. Alle enters eruit
+  2. Alle "===================" (wat waarschijnlijk aangeeft dat er een switch van locatie is) eruit
+  3. Alle scene-nummers veranderd naar `__Scene[nummer]__` zodat dit makkelijk te vinden was vanuit javascript.
+  
+Toen ben ik begonnen met het maken van mijn parser.
+
+  
+### Het Design
 
 sources y-axis: https://bl.ocks.org/hrecht/f84012ee860cb4da66331f18d588eee3 (outdated)
                 https://observablehq.com/@d3/d3-scaleordinal
