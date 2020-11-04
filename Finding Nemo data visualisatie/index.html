@@ -7,11 +7,24 @@
 	<link rel="stylesheet" href="index.css">
 </head>
 <body>
-    <div>
-        <div id="chart-area"></div>                  
-	
+    <div id="chart">
+        <div id="chart-area"></div>
+		<div id="navigation" class="none">
+			<div>
+				<button id="plusLeft" class="plus">+</button>
+				<button id="minLeft" class="min">-</button>
+			</div>
+			<div>
+				<button id="previous">Vorige Scene</button>
+				<button id="resetButton" class="none">Reset Graph</button>
+				<button id="next">Volgende Scene</button>
+			</div>
+			<div>
+				<button id="minRight" class="min">-</button>
+				<button id="plusRight" class="plus">+</button>
+			</div>
+		</div>
     </div>
-	
 
 	<!-- External JS libraries -->
 	<script src="https://d3js.org/d3.v5.min.js"></script>

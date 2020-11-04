@@ -8,6 +8,8 @@ const MARGIN = {
 }
 
 let selectedScenes = []
+let clickSelection = []
+let zoomedView = false
 
 const WIDTH = 1200 - MARGIN.LEFT - MARGIN.RIGHT
 const HEIGHT = 800 - MARGIN.TOP - MARGIN.BOTTOM
@@ -43,9 +45,11 @@ const tooltip = d3.select("body").append("div")
     .style("opacity", 0)
     .style("pointer-events", "none")
     .style("padding", "10px")
-    .style("background-color", "rgba(0,255,0,0.7)")
+    .style("background-color", "rgba(133, 132, 187, .7)")
     .style("position", "absolute")
     .style("transform", "translate(5px, -50%)")
+    .style("color", "white")
+    .style("border-radius", 10)
 
 const hoverLine = graphScreen.append("g") 
     // .style("display", "none")
@@ -114,13 +118,40 @@ const getData = () => {
                     })
                 }
             })
-            update(filteredData)
+
+            d3.select("#resetButton").on("click", () => {
+                setTimeout(() => {
+                    document.querySelector("div#navigation").classList.add("none")
+                }, 100)
+                document.querySelectorAll(".active").forEach(el => {
+                    el.classList.remove("active")
+                })
+                selectedScenes = []
+                update(filteredData)
+            })
+
+            document.querySelector("#next").addEventListener("click", () => {
+                sceneFilter("navigation", filteredData, "", [selectedScenes[0] + 1, selectedScenes[1] + 1])
+            })
+
+
+            document.querySelector("#previous").addEventListener("click", () => {
+                sceneFilter("navigation", filteredData, "", [selectedScenes[0] - 1, selectedScenes[1] - 1])
+            })    
+
+            document.querySelectorAll(".plus").forEach(el => {
+                el.addEventListener("click", (e) => {
+                    modifyLength(e, "plus", filteredData)
+                })
+            })
             
-            svg.selectAll(".x.axis .tick text")
-                .on("click", (d) => sceneFilter(filteredData, d))
-        
-            // svg.selectAll(".x.axis .tick").on("mouseover", d => {
-            // })    
+            document.querySelectorAll(".min").forEach(el => {
+                el.addEventListener("click", (e) => {
+                    modifyLength(e, "min", filteredData)
+                })
+            })
+
+            update(filteredData)
         })
     }       
 
@@ -134,8 +165,6 @@ const update = data => {
         lineNumber: [], 
         scene: []
     }
-
-    console.log(Object.keys(data).length -1)
     
     Object.entries(data).forEach(characterObj => {
         characterObj[1].scentance.map(scentance => {
@@ -160,7 +189,7 @@ const update = data => {
     y.domain(Object.keys(data))
     x.domain([allLinesWithNamesData[0].lineNumber, allLinesWithNamesData[allLinesWithNamesData.length - 1].lineNumber])
 
-    const xAxisCall = d3.axisBottom(x).tickValues(sceneCoordinates.lineNumber).tickFormat((d, i) => sceneCoordinates.scene[i])
+    const xAxisCall = d3.axisBottom(x).tickValues(sceneCoordinates.lineNumber).tickFormat((d, i) => sceneCoordinates.scene[i]).tickSizeOuter(100)
 
     xAxisGroup
         .transition(t)
@@ -181,23 +210,24 @@ const update = data => {
    
 
     yAxisGroup
-        // .transition(t) fixes bug, not nice, but check later again
+        .transition(t) 
         .call(yAxisCall.scale(y))
             .selectAll("text")
             .attr("fill", d => {
                 return data[d] ? `rgb(${colorGradient[Math.round(gradientScale(data[d].scentance.length))]})` : ""})
             .style("font-weight", "bold")
 
-    const tickSize = d3.select(".y.axis .tick")._groups[0][0].attributes.transform.value
+    const tickSize = (y(y.domain()[1]) - y(y.domain()[0])) / 2
 
-    console.log(tickSize)
-    console.log(allLinesWithNamesData)
-
-    const circles = graphScreen.attr("transform", tickSize).selectAll("circle")
+    const circles = graphScreen.attr("transform", `translate(0, ${tickSize})`).selectAll("circle")
         .data(allLinesWithNamesData, d => d.lineNumber)
 
     // EXIT old elements not present in new data
     circles.exit()
+        .transition(t)
+        .attr("cx", d => x(d.lineNumber))
+        .attr("cy", HEIGHT)
+        .attr("r", 0)
         .remove()
 
     //ENTER new elements present in new data
@@ -228,8 +258,18 @@ const update = data => {
             .transition(t)
                 .attr("cx", d => x(d.lineNumber))
                 .attr("cy", d => y(d.name))
-                .attr("r", "3")
+                .attr("r", (tickSize / 2.5) < 3 ? 3 : (tickSize > 50 ? 50 : tickSize))
                 .attr("fill", d => `rgb(${colorGradient[Math.round(gradientScale(d.totalLinesByCharacter))]})`)
+
+
+    svg.selectAll(".x.axis .tick text")
+        .on("click", (d) => sceneFilter("selection", filteredData, d))
+
+    if(zoomedView === true) {
+        document.querySelector("#navigation").classList.remove("none")
+    } else {
+        document.querySelector("#navigation").classList.add("none")
+    }
 }
 
 const hoverLineSettings = (d, state) => {
@@ -237,65 +277,49 @@ const hoverLineSettings = (d, state) => {
     if(state === "enter"){
         hoverLine.append("path")
         .attr("class", "tooltipLine")
-        .attr("d", d3.line()([[0, y(d.name) + 5], [x(d.lineNumber), y(d.name) + 5]]))
+        .attr("d", d3.line()([[0, y(d.name)], [x(d.lineNumber), y(d.name)]]))
         .style("stroke", "blue")
         .attr("fill", "none")
+        .attr("stroke-width", 5)
 
         hoverLine.append("path")
         .attr("class", "tooltipLine")
         .attr("d", d3.line()([[x(d.lineNumber), 0], [x(d.lineNumber), HEIGHT]]))
         .style("stroke", "blue")
         .attr("fill", "none")
+        .attr("stroke-width", 5)
         
     } else {
         hoverLine.selectAll("path").remove()
     }
 }
 
-const sceneFilter = (data, d) => {
-
-    startSelection(data, d, d3.event)
-
-    sceneClickedOn = Number(d3.event.target.innerHTML)
-    d3.event.target.classList.add("active")
-    if(selectedScenes.includes(sceneClickedOn)) {
-        selectedScenes = []
-    } else if (selectedScenes.length === 1 && !selectedScenes.includes(sceneClickedOn)) {
-
-        d3.selectAll("#indicator").remove()
-
-        selectedScenes.push(sceneClickedOn)
-        selectedScenes.sort((a, b) => a - b)
-
-        let filteredData = {}
-
-        Object.entries(data).forEach(characterWithScentance => {
-            filteredData = {
-                ...filteredData,
-                [characterWithScentance[0]] : {
-                    scentance : []
-                }
-            }
-            characterWithScentance[1].scentance.forEach(scentance => {
-                if (scentance.scene >= selectedScenes[0] && scentance.scene < selectedScenes[1]){
-                    filteredData[characterWithScentance[0]].scentance.push(scentance)
-                }
-            })
-        })
-
-        Object.keys(filteredData).forEach(key => filteredData[key].scentance.length === 0 ? delete filteredData[key] : {});
-
-        selectedScenes = []
-        update(filteredData)
-
-
-    } else if(selectedScenes.length !== 2){
-        selectedScenes.push(sceneClickedOn)
-    } 
-    
+const sceneFilter = (entrance, data, d, newScenes) => {
+    if(entrance === "selection"){
+        console.log("entree")
+        sceneClickedOn = Number(d3.event.target.innerHTML)
+        d3.event.target.classList.add("active")
+        if(clickSelection.includes(sceneClickedOn)) {
+            console.log("zelfde knop")
+            clickSelection = []
+            d3.event.target.classList.remove("active")
+            d3.selectAll("#indicator").remove()
+        } else if (clickSelection.length === 1 && !clickSelection.includes(sceneClickedOn)) {
+            clickSelection.push(sceneClickedOn)
+            constructNewData(data, clickSelection)
+            clickSelection = []
+        }
+        else if(clickSelection.length !== 2){
+            startSelection(d)
+            clickSelection.push(sceneClickedOn)
+        } 
+    } else if (entrance === "navigation"){
+        selectedScenes = newScenes
+        constructNewData(data, selectedScenes)
+    }
 }
 
-const startSelection = (data, d, e) => {
+const startSelection = (d) => {
     const startPath = [[x(d), 0], [x(d), HEIGHT]]
 
     g.append("path")
@@ -309,3 +333,54 @@ const startSelection = (data, d, e) => {
             .style("z-index", "-1")
     })
 } 
+
+const modifyLength = (e, state, data) => {
+    console.log(state, e.target.id)
+    if(state === "plus") {
+        if (e.target.id === state + "Left") {
+            constructNewData(data, [selectedScenes[0] - 1, selectedScenes[1]])
+        } else {
+            constructNewData(data, [selectedScenes[0], selectedScenes[1] + 1])
+        }
+    } else {
+        if (e.target.id === state + "Left") {
+            constructNewData(data, [selectedScenes[0] + 1, selectedScenes[1]])
+        } else {
+            constructNewData(data, [selectedScenes[0], selectedScenes[1] - 1])
+        }
+    }
+}
+
+const constructNewData = (data, usingScenes) => {
+    d3.selectAll("#indicator").remove()
+
+    selectedScenes = usingScenes
+
+    selectedScenes.sort((a, b) => a - b)
+
+    let filteredData = {}
+
+    Object.entries(data).forEach(characterWithScentance => {
+        filteredData = {
+            ...filteredData,
+            [characterWithScentance[0]] : {
+                scentance : []
+            }
+        }
+        characterWithScentance[1].scentance.forEach(scentance => {
+            if (scentance.scene >= selectedScenes[0] && scentance.scene < selectedScenes[1]){
+                filteredData[characterWithScentance[0]].scentance.push(scentance)
+            }
+        })
+    })
+
+    Object.keys(filteredData).forEach(key => filteredData[key].scentance.length === 0 ? delete filteredData[key] : {});
+
+    document.querySelector("#resetButton").classList.contains("none") ? document.querySelector("#resetButton.none").classList.remove("none") : null
+    
+    zoomedView = true
+
+    console.log(filteredData)
+
+    update(filteredData)
+}
