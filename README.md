@@ -296,12 +296,23 @@ Al deze functies (behalve reset) roepen direct de `constructNewData` functie aan
 MAAAAR.. De bolletjes verschenen nog niet correct. Daar had ik de data-merges en data-joins voor nodig. Dit was heel makkelijk toe te voegen. Als eerst voeg je een `circles.exit().remove()` toe om alle onnodige bolletjes te verwijderen. en aan de `circles.enter().append("circle)` voeg ik na de initiele staat `.merge(circles)` toe. Hierdoor wordt de nieuwe data toegevoegd aan de cirkels. De cirkels die blijven staan, krijgen een andere positie. De reden dat deze niet worden verwijderd en dan weer toegevoegd, is omdat ik in het begin `lineNumber` heb gelinkt aan elk bolletje. Dus als het lijn-nummer hetzelfde is, wordt gewoon zijn positie veranderd. 
 
 ## x-as sluit niet aan op y-as
+De bolletjes en de tooltip-lijn kwamen altijd een klein stukje hoger te staan dan de y-waarde waar deze bijhoorden. Gelukkig kon ik op internet veel vinden over dit probleem, alleen bood niemand de oplossing gemakkelijk aan. Uiteindelijk zag ik de oplossing door goed te kijken naar de inspector van chrome. Wat bleek nou? Het veld waar alle bolletjes inzitten, lag precies een halve y-as-tick hoger dan de y-as. Maar hoe kom ik achter de y-as ticks. Ik had een hele lelijke hacky fix gevonden:
+
+iets dat leek op : `d3.select(".y.axis tick")_group[0][0].attributes.transform`
+
+Dit kan natuurlijk niet door de beugel. Vooral (als ik heel eerlijk ben - voor mij Alleen -) omdat dan de y-as niet meer kon animeren als ik deze functie gebruikte, omdat de waarde van die tick nog niet up-to-date was op het moment waarop hij werd aangevraagd, omdat deze aan een animatie begon. Hierdoor kreeg je altijd de tick-value van je vorige scherm. 
+
+Op internet vond ik een manier hoe je data kon halen uit de y-functie. dit bleek `y.domain()` te zijn. Maar de enige data die ik hier uitkreeg, waren alle namen van alle personages in beeld. Na uren m'n hoofd te hebben gebroken over dit feit, kwam ik op de perfecte oplossing. Ik wist dat als ik de locatie had van de y-as van personage 1. en de coordinaten van de y-as van personage 2. Dan wist ik hoe ver ze uitelkaar stonden. Als ik dat verschil dus deelde door twee, wist ik de grootte van een halve tick. Uiteindelijk is dat deze functie geworden. 
+```javascript
+const tickSize = (y(y.domain()[1]) - y(y.domain()[0])) / 2
+```
+
+https://stackoverflow.com/questions/49154717/d3-js-x-axis-disappears-when-i-set-the-y-axis-domain-to-have-a-minimum-greater
+https://stackoverflow.com/questions/46942134/svg-translate-group-positioning-on-window-resize-with-d3
+https://groups.google.com/g/d3-js/c/T9l5SN0-66c?pli=1
+
 
 sources custom tick values x-axis : https://observablehq.com/@d3/axis-ticks
 
 tick grid : https://bl.ocks.org/d3noob/c506ac45617cf9ed39337f99f8511218
 
-scale issue that took serveral hours : 
-https://stackoverflow.com/questions/49154717/d3-js-x-axis-disappears-when-i-set-the-y-axis-domain-to-have-a-minimum-greater
-https://stackoverflow.com/questions/46942134/svg-translate-group-positioning-on-window-resize-with-d3
-https://groups.google.com/g/d3-js/c/T9l5SN0-66c?pli=1
