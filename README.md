@@ -136,9 +136,10 @@ Nu alles op het scherm stond ben ik terug gegaan naar de tekentafel. Er was een 
 
 **Done**
 - [x] Tooltip
-- [x] Selecteren van een of meerdere scenes
-- [x] X-as moet scenes weergeven en geen nietszeggende getallen
 - [x] De bolletjes moeten kleuren krijgen
+- [x] X-as moet scenes weergeven en geen nietszeggende getallen
+- [x] Selecteren van een of meerdere scenes
+- [x] x-as sluit niet aan op y-as
 
 **To do / Not doing**
 - [ ] Data vergelijken met "Finding Dory" (de vervolgfilm van finding Nemo)
@@ -150,7 +151,124 @@ Als eerste heb ik een div gegenereerd met een aantal style attributen (deze laat
 
 `const tooltip = d3.select("body").append("div").attr("class", "tooltip")`
 
-Daarna geef ik de circels een event mee. Dat doe ik middels
+Daarna geef ik de circels twee events. De ene om te kijken of de cursor er overheen hovered. De ander om te kijken of de muis er inmiddels niet meer overheen hovered. Dat doe je door na de `circels.enter().append("circles")` het volgende "attribute" toe te kennen. 
+
+```javascript
+circles.enter().append("circles")
+  .on("mouseover", d => {           // Hier kijk je of de cursor over een cirkel heen hovered
+     hoverlineSettings(d, "enter")  // Over deze functie ga ik het straks hebben
+     tooltip.html(`
+       <p>${d.line}</p>
+       <ul>
+          <li>said by: ${d.name}</li>
+          <li>scene: ${d.scene}</li>
+       </ul>
+     `)
+     .style("left", (d3.event.pageX) + "px")      // Zet de tooltip neer naast je muis
+     .style("top", (d3.event.pageY) + 5 + "px")   
+  })
+  .on("mouseout", () => {          // Hier kijk je of de cursor gestopt is met hoveren
+      hoverLineSettings("remove")
+      tooltip.style("opacity", 0)
+  })
+```
+
+Deze bovenstaande code is genoeg om de eerder aangemaakte tooltip te tonen. de `d3.event.pageX` geeft de huidige locatie aan van je cursor. Zo kan je de tooltip gemakkelijk naast je cursor tonen.
+
+Ook wilde ik dat er lijnen naar het geselecteerde balletje lopen vanuit de gehele x-as. Dit wil ik, zodat je makkelijk kan zien welk personage aan het praten is en tegen wie hij praat. Daar heb ik de functie hoverLineSettings voor aangemaakt. Dit heb ik in een aparte functie gedaan omdat de functie van de circels anders te lang werd. 
+
+```javascript
+const hoverLine = graphScreen.append("g") 
+
+if(state === "enter"){
+
+        // Onderstaande lijn loopt van de y-as op de hoogte van het personage 
+        // naar her personage (een horizontale ljin, dus)
+        hoverLine.append("path")
+        .attr("class", "tooltipLine")
+        .attr("d", d3.line()([[0, y(d.name)], [x(d.lineNumber), y(d.name)]])) 
+        .style("stroke", "blue")
+        .attr("fill", "none")
+        .attr("stroke-width", 5)
+
+        // Onderstaande lijn loopt van de x-as recht omhoog door het balletje
+        hoverLine.append("path")
+        .attr("class", "tooltipLine")
+        .attr("d", d3.line()([[x(d.lineNumber), 0], [x(d.lineNumber), HEIGHT]]))
+        .style("stroke", "blue")
+        .attr("fill", "none")
+        .attr("stroke-width", 5)
+    } else {
+        hoverLine.selectAll("path").remove()
+    }
+```
+
+Ik weet niet of dit de reguliere manier is om een tooltip-hulp-lijn toe te voegen, maar het werkt.
+
+### Gekleurde bolletjes
+Ik wilde wat meer kleur geven aan mijn grafiek en het onderscheid tussen de bolletjes wat groter maken. Ik heb op internet een kleuren-schema gevonden en deze gehanteerd. Het probleem is, dat toen ik dit kleurenschema ging toepassen, iedereen behalve Dory, Marley en Nemo dezelfde kleur was. Dit kwam omdat ik de kleur liet komen vanuit een lineaire schaal genereerde. Maar er zijn maar weinig personages die meer dan 20 zinnen zeggen. (fun fact: Marley zegt er 372). Dit betekende dat ik mijn schaal moest aanpassen.
+
+```javascript 
+// Initialisatie
+const colorGradient = ["255,235,204", "187,220,205", "153, 203, 205", "120, 188, 207", "97,168,202", "83,143,186", "69,118,169", "56,94,153", "43,68,138", "30,45,122", "23,33,97", "17,24,72"]
+
+const gradientScale = d3.scaleLog()
+
+// Na update functie
+gradientScale.domain([1, 372]).range([0, colorGradient.length -1])
+```
+
+Met deze schaal raakte ik echt de "sweet-spot". Dit resulteerd in een ten eerste leuker-uitziende grafiek, maar ook wordt de grafiek hier overzichtelijker van. 
+
+De reden dat 372 hardcoded is, is omdat Marley (degene die de meeste zinnen zegt) niet in alle scenes voorkomt. Ook wil ik niet elke keer dat de grafiek wijzigd deze schaal wijzigen, omdat deze logaritmisch is. Dit kan resulteren in hele saaie, onherkenbare kleuren na het inzoomen.
+
+Nu alleen de kleur nog toepassen en klaar 
+```javascript
+.attr("fill", d => `rgb(${colorGradient[Math.round(gradientScale(d.totalLinesByCharacter))]})`)
+```
+
+### x-as moet scenes weergeven
+Regelnummers uit het script zijn nietszeggend. Ik wil dat het in een oogopslag duidelijk wordt in welke scene iemand zich begeeft. Dus wat ik wilde is 
+  - x-as ticks moeten scenes weergeven
+  - x-as ticks moeten zo lang worden dat er een grid ontstaat
+  
+Als eerste de scenes als ticks.
+Aangezien het niet erg populair is om een niet-symmetriche x-as te gebruiken, was het vrij lastig om uit te zoeken hoe ik dit zou fixen. met behulp van (deze bron)[https://observablehq.com/@d3/axis-ticks] heb ik uiteindelijk het probleem opgelost.
+
+```javascript
+const sceneCoordinates = {
+    lineNumber: [], 
+    scene: []
+}
+
+allLinesWithNamesData.sort((a, b) => a.lineNumber - b.lineNumber)
+    .forEach((data, i) => {
+      if (data.scene === currentScene) {
+          sceneCoordinates.lineNumber.push([data.lineNumber])
+          sceneCoordinates.scene.push([data.scene])
+          currentScene++
+          return
+      } else {
+        return
+      }
+})   
+
+const xAxisCall = d3.axisBottom(x)
+    .tickValues(sceneCoordinates.lineNumber)
+    .tickFormat((d, i) => sceneCoordinates.scene[i])
+```
+
+### Selecteren van een of meerdere scenes
+Natuurlijk wilde ik de grafiek ook spannender maken. Ik wilde dat het mogelijk werd om scenes te ontdekken door ze van dichterbij te kunnen bekijken. Ook wilde ik dat je door de hele film kon klikken als je bijvoorbeeld maar één scene had geselecteerd (dus dat je van scene 1 naar scene 2 gaat etc.).
+
+Eerst wilde ik een range-slider toevoegen. Maar wegens slechte ervaringen met range sliders (en jQuerry), besloot ik om de scene-nummers van de x-as te gebruiken als range-slider. Het idee is dat je eerst klikt op een scene, daarna een andere scene en dat de grafiek daarna inzoomed naar aanleiding van je selectie.
+
+Ik heb een event toegevoegd op `d3.selectAll(".x.axis .tick text")`. Deze roept de functie sceneFilter aan. Deze kijkt of het :
+  1. je eerste klik is
+  2. of je op hetzelfde klikt als vorige keer
+  3. of je twee unieke kliks hebt
+  
+Als je voor het eerste klikt, dan wordt de text van de tick van x-as groter en een andere kleur. Ook wordt de functie `startSelection` aangeroepen. Deze tekent een lijn vanaf het punt op de x-as van waar je op klikte, recht omhoog. als je nu hovered over een andere x-as tick, dan kan je heel duidelijk zien  
 
 sources custom tick values x-axis : https://observablehq.com/@d3/axis-ticks
 
