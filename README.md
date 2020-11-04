@@ -134,13 +134,23 @@ Dit resulteerde in de onderstaande data-visualisatie.
 ## Bigger and Better
 Nu alles op het scherm stond ben ik terug gegaan naar de tekentafel. Er was een hoop goed, maar er was misschien wel meer verkeerd. Ik heb een lijstje gemaakt van wat ik nog wilde toevoegen. Zie het lijstje hieronder: 
 
--[x] Tooltip
--[ ] Data vergelijken met "Finding Dory" (de vervolgfilm van finding Nemo)
--[x] Selecteren van een of meerdere scenes
--[x] X-as moet scenes weergeven en geen nietszeggende getallen
--[x] De bolletjes moeten kleuren krijgen
+**Done**
+- [x] Tooltip
+- [x] Selecteren van een of meerdere scenes
+- [x] X-as moet scenes weergeven en geen nietszeggende getallen
+- [x] De bolletjes moeten kleuren krijgen
 
-### -[x] Tooltip
+**To do / Not doing**
+- [ ] Data vergelijken met "Finding Dory" (de vervolgfilm van finding Nemo)
+
+### Tooltip
+Als eerste wilde ik een tooltip toevoegen. Dit is een makkelijke en een van de beste manieren om van je statische grafiek iets interactiefs te maken. 
+
+Als eerste heb ik een div gegenereerd met een aantal style attributen (deze laat ik niet zin in de regel hieronder, anders is de pagina vol).
+
+`const tooltip = d3.select("body").append("div").attr("class", "tooltip")`
+
+Daarna geef ik de circels een event mee. Dat doe ik middels
 
 sources custom tick values x-axis : https://observablehq.com/@d3/axis-ticks
 
