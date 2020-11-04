@@ -34,17 +34,39 @@ Ik kwam op een website genaamd [imsdb.com](imsdb.com). Hier bieden ze van waanzi
   2. Personages
   3. Zinnen
   
-  ![rouwe data](https://github.com/muise001/FindingNemoD3/blob/main/foto's/Schermafbeelding%202020-11-04%20om%2015.05.24.png)
-  
 Dit was percies wat ik nodig had. Ik heb het filmscript volledig ge-copy-paste naar een .txt bestand en heb een aantal kleine dingen bewerkt in dit bestand.
   1. Alle enters eruit
   2. Alle "===================" (wat waarschijnlijk aangeeft dat er een switch van locatie is) eruit
   3. Alle scene-nummers veranderd naar `__Scene[nummer]__` zodat dit makkelijk te vinden was vanuit javascript.
   
-Toen ben ik begonnen met het maken van mijn parser.
+  Hieronder een foto van de rouwe data na bovenstaande wijzigingen
+  
+  ![rouwe data](https://github.com/muise001/FindingNemoD3/blob/main/foto's/Schermafbeelding%202020-11-04%20om%2015.05.24.png)  
+  
+Toen ben ik begonnen met het maken van mijn parser. Ik wilde dat mijn code er als volgt uit kwam te zien
 
+```javascript
+  data: {
+    [Naam]: {
+      scentance: [{
+        line: "Bla bla bla",
+        scene: 2,
+        lineNumber: 18,
+      }]
+    }  
+  }
+```
+
+De reden dat ik het zo wilde is dat ik gemakkelijk kon zien hoeveel characters er waren en per character dan de zinnen kon vertonen en uitlezen.
+
+In de code begon ik met het fetchen van de dataset.
+Per zin keek ik of de zin begon met `__Scene`. Zo ja, dan wist ik dat alles wat daarna kwam tot die scene behoorde. Daarna keek ik per zin of de zin begon met twee hoofdletters. Als ik dat wist, dan wist ik dat het hier ging om een personage, en dan wist ik dat wat hierna gezegd was, vanuit dit personage kwam. Alle hieropvolgende regels die niet OF een personage OF een `__Scene__` was, werd toegoegd aan de vorige zin. Het kan namelijk voorkomen dat iemand een hele lange zin zegt die verdeeld is over drie regels. Het regelnummer wist ik, omdat ik over de data heen loop en gemakkelijk het variabele `i` kon gebruiken.
+
+Uiteindelijk heeft mijn parser het voor elkaar gekregen om deze data naar wens te vertonen
+![De bruikbare data](https://github.com/muise001/FindingNemoD3/blob/main/foto's/Schermafbeelding%202020-11-04%20om%2015.07.01.png)
   
 ### Het Design
+Nu ik de data had ging ik nadenken wat ik ermee wilde doen. Ik had eerder al een lijstje bedacht, maar had geen zin om bar-charts te maken. Die zijn vaak simpel en weinig uitdagend.
 
 sources y-axis: https://bl.ocks.org/hrecht/f84012ee860cb4da66331f18d588eee3 (outdated)
                 https://observablehq.com/@d3/d3-scaleordinal
