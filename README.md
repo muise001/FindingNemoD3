@@ -4,16 +4,18 @@
 
 ## Intro
 
-Afgelopen maanden heb ik een online cursus gevolgd over D3. Dit deed ik zodat ik een beter begrip kreeg in D3 en meer kon bereiken dan alleen het knippen-en-plakken van bestaanden grafieken. Ik wilde het mogelijk maken om mijn eigen creativiteit uit te drukken in grafieken en daar had ik deze kennis voor nodig, anders was ik voor altijd gelimiteerd aan bestaand werk.
+Afgelopen maanden heb ik een online cursus gevolgd over D3. Dit deed ik zodat ik D3 beter zou gaan begrijpen en meer kon bereiken dan alleen het knippen-en-plakken van bestaanden grafieken. Ik wilde het mogelijk maken om mijn eigen creativiteit uit te drukken in grafieken en daar had ik deze kennis voor nodig, anders was ik voor altijd gelimiteerd aan bestaand werk.
 
-De cursus die ik heb gevolgd is "Mastering data visualization in D3.js [2020 UPDATE]" op Udemy.
+De cursus die ik heb gevolgd is ["Mastering data visualization in D3.js [2020 UPDATE]"](https://www.udemy.com/course/masteringd3js/) op Udemy.
 
 In de loop van dan deze cursus heb ik meerdere notitieboekjes volgeschreven met kleine cheatsheets en handige tips.
+
+![prior work](https://github.com/muise001/FindingNemoD3/blob/main/foto's/notes.png) 
 
 Tijdens deze cursus heb ik geleerd hoe je barcharts, bolletjes grafieken en line-charts maakt. in D3 v5
 
 ### Voorbeelden
-Screenshots van vorige opdrachten
+![prior work](https://github.com/muise001/FindingNemoD3/blob/main/foto's/priorwork.gif) 
 
 ## Finding Nemo
 
@@ -57,7 +59,7 @@ Toen ben ik begonnen met het maken van mijn parser. Ik wilde dat mijn code er al
   }
 ```
 
-De reden dat ik het zo wilde is dat ik gemakkelijk kon zien hoeveel characters er waren en per character dan de zinnen kon vertonen en uitlezen.
+De reden dat ik het zo wilde, is dat ik gemakkelijk kon zien hoeveel characters er waren en per character dan de zinnen kon vertonen en uitlezen.
 
 In de code begon ik met het fetchen van de dataset.
 Per zin keek ik of de zin begon met `__Scene`. Zo ja, dan wist ik dat alles wat daarna kwam tot die scene behoorde. Daarna keek ik per zin of de zin begon met twee hoofdletters. Als ik dat wist, dan wist ik dat het hier ging om een personage, en dan wist ik dat wat hierna gezegd was, vanuit dit personage kwam. Alle hieropvolgende regels die niet OF een personage OF een `__Scene__` was, werd toegoegd aan de vorige zin. Het kan namelijk voorkomen dat iemand een hele lange zin zegt die verdeeld is over drie regels. Het regelnummer wist ik, omdat ik over de data heen loop en gemakkelijk het variabele `i` kon gebruiken.
@@ -73,7 +75,7 @@ Nu ik de data had ging ik nadenken wat ik ermee wilde doen. Ik had eerder al een
 Dit leek me een goed design, aangezien je een duidelijk overzicht hebt van alle personages, alle scenes, dialogen, het verloop van de film en je kan er locatie-changes uit aflezen als opeens twee compleet verschillende mensen met elkaar gaan praten. 
 
 ## Versie 0.1.
-Als eerst wilde ik het design exact namaken. Dan had ik namelijk de essentie van de visualisatie al op beeld en kon ik later natuurlijk verder uitbouwen.
+Als eerst wilde ik het design exact namaken. Dan had ik namelijk de essentie van de visualisatie al op beeld en kon ik later verder uitbouwen.
 
 ### De setup
 Als eerst heb ik de data ge-fetched. Deze door de parser heen laten lopen en vervolgens verstuurd naar de hoofd functie genaamd "update". In de update functie console.log'de ik alleen nog de data. Daar gebeurde verder niks mee. 
@@ -97,7 +99,7 @@ De x-as was een ander verhaal. Omdat mijn data was vormgegeven op de manier waar
   [{line: "bla, bla", lineNumber: 4, scene: 2} {line: "bla, bla", lineNumber: 5, scene: 2}]
 ```
 
-deze transitie bleek gelukkig makkelijker dan verwacht. Later heb ik ook de naam toegevoegd van het personage die het de zin in kwestie zegt. Dit had ik nodig om de bolletjes goed te alignen met de y-as. De totalLinesByCharacter heb ik later toegevoegd om de kleur van de bolletjes te berekenen
+deze transitie bleek gelukkig makkelijker dan verwacht. Later heb ik ook de naam toegevoegd van het personage die de zin in kwestie zegt. Dit had ik nodig om de bolletjes goed te alignen met de y-as. De totalLinesByCharacter heb ik later toegevoegd om de kleur van de bolletjes te berekenen
 
 ```javascript
 const allLinesWithNamesData = []
@@ -221,9 +223,9 @@ const gradientScale = d3.scaleLog()
 gradientScale.domain([1, 372]).range([0, colorGradient.length -1])
 ```
 
-Met deze schaal raakte ik echt de "sweet-spot". Dit resulteerd in een ten eerste leuker-uitziende grafiek, maar ook wordt de grafiek hier overzichtelijker van. 
+Met deze schaal raakte ik echt de "sweet-spot". Dit resulteerd in een - ten eerste - leuker-uitziende grafiek, maar ook wordt de grafiek hier overzichtelijker van. 
 
-De reden dat 372 hardcoded is, is omdat Marley (degene die de meeste zinnen zegt) niet in alle scenes voorkomt. Ook wil ik niet elke keer dat de grafiek wijzigd deze schaal wijzigen, omdat deze logaritmisch is. Dit kan resulteren in hele saaie, onherkenbare kleuren na het inzoomen.
+De reden dat 372 hardcoded is, is omdat Marley (degene die de meeste zinnen zegt) niet in alle scenes voorkomt. Ook wil ik niet dat als de grafiek veranderd. De schaal elke keer wijzigd, omdat deze logaritmisch is. Dit kan resulteren in hele saaie, onherkenbare kleuren na het inzoomen.
 
 Nu alleen de kleur nog toepassen en klaar 
 ```javascript
@@ -231,11 +233,11 @@ Nu alleen de kleur nog toepassen en klaar
 ```
 
 ### x-as moet scenes weergeven
-Regelnummers uit het script zijn nietszeggend. Ik wil dat het in een oogopslag duidelijk wordt in welke scene iemand zich begeeft. Dus wat ik wilde is 
+Regelnummers uit het script zijn nietszeggend als je ze ziet op de x-as. Ik wil dat het in een oogopslag duidelijk wordt in welke scene iemand zich begeeft. Dus wat ik wilde is 
   - x-as ticks moeten scenes weergeven
   - x-as ticks moeten zo lang worden dat er een grid ontstaat
   
-Als eerste de scenes als ticks.
+__De scenes als x-as ticks.__
 Aangezien het niet erg populair is om een niet-symmetriche x-as te gebruiken, was het vrij lastig om uit te zoeken hoe ik dit zou fixen. met behulp van [deze bron](https://observablehq.com/@d3/axis-ticks) heb ik uiteindelijk het probleem opgelost.
 
 ```javascript
@@ -270,18 +272,35 @@ xAxisGroup
 ### Selecteren van een of meerdere scenes
 Natuurlijk wilde ik de grafiek ook spannender maken. Ik wilde dat het mogelijk werd om scenes te ontdekken door ze van dichterbij te kunnen bekijken. Ook wilde ik dat je door de hele film kon klikken als je bijvoorbeeld maar één scene had geselecteerd (dus dat je van scene 1 naar scene 2 gaat etc.).
 
-Eerst wilde ik een range-slider toevoegen. Maar wegens slechte ervaringen met range sliders (en jQuerry), besloot ik om de scene-nummers van de x-as te gebruiken als range-slider. Het idee is dat je eerst klikt op een scene, daarna een andere scene en dat de grafiek daarna inzoomed naar aanleiding van je selectie.
+In de eerste instantie wilde ik een range-slider toevoegen. Maar wegens slechte ervaringen met range sliders (en jQuerry), besloot ik om de scene-nummers van de x-as te gebruiken als range-slider. Het idee is dat je eerst klikt op een scene, daarna een andere scene en dat de grafiek daarna inzoomed naar aanleiding van je selectie.
 
-Ik heb een event toegevoegd op `d3.selectAll(".x.axis .tick text")`. Deze roept de functie sceneFilter aan. Deze kijkt of het :
+Ik heb een click-event toegevoegd op `d3.selectAll(".x.axis .tick text")`. Deze roept de functie sceneFilter aan. Deze kijkt of het :
   1. je eerste klik is
   2. of je op hetzelfde klikt als vorige keer
   3. of je twee unieke kliks hebt
   
-Als je voor het eerste klikt, dan wordt de text van de tick van x-as groter en een andere kleur. Ook wordt de functie `startSelection` aangeroepen. Deze tekent een lijn vanaf het punt op de x-as van waar je op klikte, recht omhoog. als je nu hovered over een andere x-as tick, dan kan je heel duidelijk zien van waar tot waar je selectie loopt. Het selectie-vak moet je zien als een lijn die naar boven loopt, dan naar rechts, en dan naar beneden. In plaats van een `stroke` heb ik deze lijn een `fill` gegeven, hierdoor wordt hij ingekleurd.
+Als je voor het eerste klikt, dan wordt de text van de tick van x-as groter en een andere kleur. Ook wordt de functie `startSelection` aangeroepen. Deze tekent een lijn vanaf het punt op de x-as van waar je op klikte. In het voorbeeld hieronder zie je dat de functie de parameter `d` meekrijgt. `d` is het regelnummer die hoort bij de scene. Hierdoor kan ik de lijn laten tekenen vanaf dat punt in de grafiek. Als je nu hovered over een andere x-as tick, dan kan je heel duidelijk zien van waar tot waar je selectie loopt. Het selectie-vak moet je zien als een lijn die naar boven loopt, dan naar rechts, en dan naar beneden. In plaats van een `stroke` heb ik deze lijn een `fill` gegeven, hierdoor wordt hij ingekleurd (zie de code hieronder).
 
-Als je op het tweede klikt, wordt je selectie ongedaan gemaakt
+```javascript
+const startSelection = (d) => {
+    const startPath = [[x(d), 0], [x(d), HEIGHT]]
 
-Als je twee "unieke" scenes selecteerd, wordt de functie `constructNewData` aangeroepen. Deze krijgt `(data, usingScenes)` mee als parameters. Data in dit geval is de originele geparsde dataset. usingScenes is een array met twee getallen. Deze geven aan welke scenes hij van die data moet pakken. Uiteraard eindigd deze functie met het opnieuw aanroepen van de update functie.
+    g.append("path")
+        .attr("id", "indicator")
+        .attr("d", d3.line()([startPath]))
+
+    svg.selectAll(".x.axis .tick text").on("mouseover", val => {
+        g.select("#indicator")
+            .attr("d", d3.line()([...startPath, [x(val), HEIGHT], [x(val), 0]]))
+            .attr("fill", "rgba(0,0,0,.2)")
+            .style("z-index", "-1")
+    })
+} 
+```
+
+Als je twee keer op dezelfde x-as waarde klikt, wordt je selectie ongedaan gemaakt.
+
+Als je twee "unieke" scenes selecteerd, wordt de functie `constructNewData` aangeroepen. Deze krijgt `(data, usingScenes)` mee als parameters. Data in dit geval is de initiele geparsde dataset. usingScenes is een array met twee getallen. Deze geven aan welke scenes hij van die data moet pakken. Uiteraard eindigd deze functie met het opnieuw aanroepen van de update functie.
 
 Dit resulteerde in een kapotte x-as. Sterker nog, na elke re-render vloog de hele as en alle bolletjes in een gigantische snelheid het scherm uit. Dat kwam omdat de `x.domain` nogsteeds `([0, allLinesWithNamesData.length])` was. Uiteindelijk heb ik die gewijzigd naar: 
 ```javascript
@@ -301,9 +320,9 @@ Nu het zoomen werkt, wilde ik extra navigatie maken. Dit zijn een aantal knoppen
   - Vorige scene
   - Reset
   
-Al deze functies (behalve reset) roepen direct de `constructNewData` functie aan met de originele data en een array die aangeeft welke scenes erbij moeten komen en welke weg moeten.
+Al deze functies (behalve reset) roepen direct de `constructNewData` functie aan met de originele data en een array die aangeeft welke scenes erbij moeten komen en welke weg moeten. Reset roept de update functie aan met de initiele data.
 
-MAAAAR.. De bolletjes verschenen nog niet correct. Daar had ik de data-merges en data-joins voor nodig. Dit was heel makkelijk toe te voegen. Als eerst voeg je een `circles.exit().remove()` toe om alle onnodige bolletjes te verwijderen. en aan de `circles.enter().append("circle)` voeg ik na de initiele staat `.merge(circles)` toe. Hierdoor wordt de nieuwe data toegevoegd aan de cirkels. De cirkels die blijven staan, krijgen een andere positie. De reden dat deze niet worden verwijderd en dan weer toegevoegd, is omdat ik in het begin `lineNumber` heb gelinkt aan elk bolletje. Dus als het lijn-nummer hetzelfde is, wordt gewoon zijn positie veranderd. 
+MAAAAR.. De bolletjes verschenen nog niet correct. Daar had ik de data-merges en data-joins voor nodig. Dit was heel makkelijk toe te voegen. Als eerst voeg je een `circles.exit().remove()` toe om alle onnodige bolletjes te verwijderen. Aan de `circles.enter().append("circle)` voeg ik na de initiele staat `.merge(circles)` toe. Hierdoor wordt de nieuwe data toegevoegd aan de cirkels. De cirkels die blijven staan, krijgen een andere positie. De reden dat deze niet worden verwijderd en dan weer toegevoegd, is omdat ik in het begin `lineNumber` heb gelinkt aan elk bolletje. Dus als het lijn-nummer hetzelfde is, wordt gewoon zijn positie veranderd. 
 
 ![Selection gif](https://github.com/muise001/FindingNemoD3/blob/main/foto's/selection.gif)
 
@@ -312,9 +331,13 @@ De bolletjes en de tooltip-lijn kwamen altijd een klein stukje hoger te staan da
 
 iets dat leek op : `d3.select(".y.axis tick")_group[0][0].attributes.transform`
 
-Dit kan natuurlijk niet door de beugel. Vooral (als ik heel eerlijk ben - voor mij Alleen -) omdat dan de y-as niet meer kon animeren als ik deze functie gebruikte, omdat de waarde van die tick nog niet up-to-date was op het moment waarop hij werd aangevraagd, omdat deze aan een animatie begon. Hierdoor kreeg je altijd de tick-value van je vorige scherm. 
+Dit kan natuurlijk niet door de beugel. Vooral (als ik heel eerlijk ben - voor mij ALLEEN -) omdat dan de y-as niet meer kon animeren als ik deze functie gebruikte. Dit kwam omdat de waarde van die tick nog niet up-to-date was op het moment waarop hij werd aangevraagd, omdat deze met een animatie bezig was. Hierdoor kreeg je altijd de tick-value van je vorige scherm. 
 
-Op internet vond ik een manier hoe je data kon halen uit de y-functie. dit bleek `y.domain()` te zijn. Maar de enige data die ik hier uitkreeg, waren alle namen van alle personages in beeld. Na uren m'n hoofd te hebben gebroken over dit feit, kwam ik op de perfecte oplossing. Ik wist dat als ik de locatie had van de y-as van personage 1. en de coordinaten van de y-as van personage 2. Dan wist ik hoe ver ze uitelkaar stonden. Als ik dat verschil dus deelde door twee, wist ik de grootte van een halve tick. Uiteindelijk is dat deze functie geworden. 
+Op internet vond ik een manier hoe je data kon halen uit de y-functie. dit bleek `y.domain()` te zijn. Maar de enige data die ik hieruit kreeg, waren alle namen van alle personages in beeld. Toen ik hier niet uitkwam besloot ik maar naar bed te gaan. Na een tijdje m'n hoofd te hebben gebroken in bed over dit feit, kwam ik op de perfecte oplossing. Deze, zoals elk goed idee, stuurde ik in een whats'appje naar mezelf.
+
+![Selection gif](https://github.com/muise001/FindingNemoD3/blob/main/foto's/whatsapp.jpeg)
+
+Ik wist dat als ik de locatie had van de y-as van personage 1. en de coordinaten van de y-as van personage 2, dan wist ik hoe ver ze uitelkaar stonden. Als ik dat verschil dus deelde door twee, wist ik de grootte van een halve tick. Uiteindelijk is dat deze functie geworden. 
 ```javascript
 const tickSize = (y(y.domain()[1]) - y(y.domain()[0])) / 2
 ```
@@ -322,7 +345,7 @@ const tickSize = (y(y.domain()[1]) - y(y.domain()[0])) / 2
 In mijn ogen was deze oplossing het bewijs dat ik me comfortabel voel met d3, en ik ben heel trots dat dit lukte. 
 
 ## Grootte van de bolletjes
-Als je inzoomt, dan bleven de bolletjes net zo groot, als in de eerste render. Dat is 3px. Super klein, dus. Als je naar een scene kijkt die maar uit twee peronages bestaat, dan wil je niet dat je naar mini-bolletjes kijkt. De grootte van de bolletjes heb ik afhankelijk gemaakt van de ticksize (die hierboven wordt uitgelegd). Om eerlijk te zijn heb ik niet heel veel logica toegepast, maar ben ik gewoon gaan kijken naar wat er ongeveer goed uit zag.
+Na het inzoomen in de grafiek, bleven de bolletjes net zo groot als in de eerste render. Dat is 3px. Super klein, dus. Als je naar een scene kijkt die maar uit twee peronages bestaat, dan wil je niet dat je naar mini-bolletjes kijkt. De grootte van de bolletjes heb ik afhankelijk gemaakt van de ticksize (die hierboven wordt uitgelegd). Om eerlijk te zijn heb ik niet heel veel logica toegepast, maar ben ik gewoon gaan kijken naar wat er ongeveer goed uit zag. Ik kwam op onderstaande code.
 ```javascript
 .attr("r", (tickSize / 2.5) < 3 ? 3 : (tickSize > 50 ? 50 : tickSize))
 ```
@@ -335,7 +358,11 @@ Hierin zeg ik dat alle animaties anderhalve seconde moeten duren. Klinkt lang, e
 
 Als intro-animatie wilde ik het laten lijken alsof er allemaal bubbeltjes uit water naar boven dreven. Dit effect heb ik bereikt door alle x-as posities van de bolletjes vanaf het begin mee te geven en de y-as heb laten animeren. Hierdoor gaan de bolletjes recht omhoog.
 
-Verder heb ik de x-as en y-as laten animeren. Dit staat gewoon goed als je inzoomed.
+Verder heb ik de x-as en y-as laten animeren. Dit staat gewoon goed bij de initiele render en als je inzoomed.
+
+# Bedankt voor het lezen van m'n proces!
+
+## Verdere bronnen
 
 https://stackoverflow.com/questions/49154717/d3-js-x-axis-disappears-when-i-set-the-y-axis-domain-to-have-a-minimum-greater
 https://stackoverflow.com/questions/46942134/svg-translate-group-positioning-on-window-resize-with-d3
