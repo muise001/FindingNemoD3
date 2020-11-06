@@ -305,6 +305,8 @@ Al deze functies (behalve reset) roepen direct de `constructNewData` functie aan
 
 MAAAAR.. De bolletjes verschenen nog niet correct. Daar had ik de data-merges en data-joins voor nodig. Dit was heel makkelijk toe te voegen. Als eerst voeg je een `circles.exit().remove()` toe om alle onnodige bolletjes te verwijderen. en aan de `circles.enter().append("circle)` voeg ik na de initiele staat `.merge(circles)` toe. Hierdoor wordt de nieuwe data toegevoegd aan de cirkels. De cirkels die blijven staan, krijgen een andere positie. De reden dat deze niet worden verwijderd en dan weer toegevoegd, is omdat ik in het begin `lineNumber` heb gelinkt aan elk bolletje. Dus als het lijn-nummer hetzelfde is, wordt gewoon zijn positie veranderd. 
 
+![Selection gif](https://github.com/muise001/FindingNemoD3/blob/main/foto's/selection.gif)
+
 ## x-as sluit niet aan op y-as
 De bolletjes en de tooltip-lijn kwamen altijd een klein stukje hoger te staan dan de y-waarde waar deze bijhoorden. Gelukkig kon ik op internet veel vinden over dit probleem, alleen bood niemand de oplossing gemakkelijk aan. Uiteindelijk zag ik de oplossing door goed te kijken naar de inspector van chrome. Wat bleek nou? Het veld waar alle bolletjes inzitten, lag precies een halve y-as-tick hoger dan de y-as. Maar hoe kom ik achter de y-as ticks. Ik had een hele lelijke hacky fix gevonden:
 
