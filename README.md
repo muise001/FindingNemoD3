@@ -335,7 +335,7 @@ Dit kan natuurlijk niet door de beugel. Vooral (als ik heel eerlijk ben - voor m
 
 Op internet vond ik een manier hoe je data kon halen uit de y-functie. dit bleek `y.domain()` te zijn. Maar de enige data die ik hieruit kreeg, waren alle namen van alle personages in beeld. Toen ik hier niet uitkwam besloot ik maar naar bed te gaan. Na een tijdje m'n hoofd te hebben gebroken in bed over dit feit, kwam ik op de perfecte oplossing. Deze, zoals elk goed idee, stuurde ik in een whats'appje naar mezelf.
 
-(Ja, ik ben me ervan bewust dat ik "food for thought") fout heb geschreven, maar in mijn defence: "Het was al laat")
+(Ja, ik ben me ervan bewust dat ik "food for thought" fout heb geschreven, maar in mijn defence: "Het was al laat")
 ![Selection gif](https://github.com/muise001/FindingNemoD3/blob/main/foto's/whatsapp.jpeg)
 
 Ik wist dat als ik de locatie had van de y-as van personage 1. en de coordinaten van de y-as van personage 2, dan wist ik hoe ver ze uitelkaar stonden. Als ik dat verschil dus deelde door twee, wist ik de grootte van een halve tick. Uiteindelijk is dat deze functie geworden. 
