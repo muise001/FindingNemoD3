@@ -206,6 +206,8 @@ if(state === "enter"){
 
 Ik weet niet of dit de reguliere manier is om een tooltip-hulp-lijn toe te voegen, maar het werkt.
 
+![Tooltip screenshot](https://github.com/muise001/FindingNemoD3/blob/main/foto's/tooltip.png)
+
 ### Gekleurde bolletjes
 Ik wilde wat meer kleur geven aan mijn grafiek en het onderscheid tussen de bolletjes wat groter maken. Ik heb op internet een kleuren-schema gevonden en deze gehanteerd. Het probleem is, dat toen ik dit kleurenschema ging toepassen, iedereen behalve Dory, Marley en Nemo dezelfde kleur was. Dit kwam omdat ik de kleur liet komen vanuit een lineaire schaal genereerde. Maar er zijn maar weinig personages die meer dan 20 zinnen zeggen. (fun fact: Marley zegt er 372). Dit betekende dat ik mijn schaal moest aanpassen.
 
@@ -234,7 +236,7 @@ Regelnummers uit het script zijn nietszeggend. Ik wil dat het in een oogopslag d
   - x-as ticks moeten zo lang worden dat er een grid ontstaat
   
 Als eerste de scenes als ticks.
-Aangezien het niet erg populair is om een niet-symmetriche x-as te gebruiken, was het vrij lastig om uit te zoeken hoe ik dit zou fixen. met behulp van (deze bron)[https://observablehq.com/@d3/axis-ticks] heb ik uiteindelijk het probleem opgelost.
+Aangezien het niet erg populair is om een niet-symmetriche x-as te gebruiken, was het vrij lastig om uit te zoeken hoe ik dit zou fixen. met behulp van [deze bron](https://observablehq.com/@d3/axis-ticks) heb ik uiteindelijk het probleem opgelost.
 
 ```javascript
 const sceneCoordinates = {
@@ -259,7 +261,7 @@ const xAxisCall = d3.axisBottom(x)
     .tickFormat((d, i) => sceneCoordinates.scene[i])
 ```
 
-Ook laat ik lijnen vanuit de x-as verschijnen met behulp van (deze bron)[https://bl.ocks.org/d3noob/c506ac45617cf9ed39337f99f8511218]. Nu ziet de xAxisGroup er alsvolgd uit.
+Ook laat ik lijnen vanuit de x-as verschijnen met behulp van [deze bron](https://bl.ocks.org/d3noob/c506ac45617cf9ed39337f99f8511218). Nu ziet de xAxisGroup er alsvolgd uit.
 ```javascript
 xAxisGroup
   .call(xAxisCall.tickSize(-HEIGHT))
@@ -289,6 +291,8 @@ Dit resulteerde in een kapotte x-as. Sterker nog, na elke re-render vloog de hel
     ])
 ```
 Nu werkte het weer, aangezien hij nu het eerste regelnummer van de nieuwe data pakt en het laatste regelnummer.
+
+![Selection screenshot](https://github.com/muise001/FindingNemoD3/blob/main/foto's/selection.png)
 
 Nu het zoomen werkt, wilde ik extra navigatie maken. Dit zijn een aantal knoppen
   - `+` en `-` Links 
